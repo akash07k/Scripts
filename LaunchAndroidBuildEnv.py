@@ -18,7 +18,7 @@ def elevate():
         None,
         "runas",
         "wt.exe",
-        "new-tab cmd /k " + args,
+        "new-tab --title \"AndroidBuildEnv\" cmd /k " + args,
         None,
         1
     )
