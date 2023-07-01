@@ -13,12 +13,13 @@ def elevate():
     print("Not running with administrator priveleges...")
     # Re-launch cmd.exe with administrator privileges and pass the arguments
     print("Re-launching the command prompt with administrator priveleges and passing the arguments to it...")
-    args = 'wsl --shutdown && wsl --mount \\\\.\\PHYSICALDRIVE3 --partition 2 --name rom && wsl'
+    terminal_args = "new-tab --title \"AndroidBuildEnv\" cmd /k "
+    command_args = 'wsl --shutdown && wsl --mount \\\\.\\PHYSICALDRIVE3 --partition 2 --name rom && wsl'
     ctypes.windll.shell32.ShellExecuteW(
         None,
         "runas",
         "wt.exe",
-        "new-tab --title \"AndroidBuildEnv\" cmd /k " + args,
+         terminal_args + command_args,
         None,
         1
     )
