@@ -17,8 +17,8 @@ def elevate():
     ctypes.windll.shell32.ShellExecuteW(
         None,
         "runas",
-        "cmd.exe",
-        "/K " + args,
+        "wt.exe",
+        "new-tab cmd /k " + args,
         None,
         1
     )
