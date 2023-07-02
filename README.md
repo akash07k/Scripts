@@ -1,2 +1,2 @@
-# PythonScripts
-Python scripts for simplifying my frequent tasks
+# Scripts
+Scripts for simplifying my frequently performed tasks
