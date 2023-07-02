@@ -9,7 +9,7 @@ print("1. Add a new ROM and device to configuration")
 print("2. Add telegram config")
 
 valid_choices: List[int] = [1, 2, 3]
-choice: int = None
+choice: int = 0
 
 while choice not in valid_choices:
     try:
@@ -38,7 +38,7 @@ if choice == 1:
         print("1. Yes")
         print("2. No")
         valid_choices: List[int] = [1, 2]
-        choice: int = None
+        choice: int = 0
         while choice not in valid_choices:
             try:
                 choice = int(input("Enter your choice: "))
