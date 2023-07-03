@@ -31,7 +31,8 @@ while choice == 0:
 
 selected_rom: str = rom_choices[choice - 1]
 selected_section: str = rom_sections[choice - 1]
-print(f"Selected ROM: {selected_rom} ({selected_section})")
+device_codename = config.get(selected_section, "DEVICE_CODENAME", fallback=None)
+print(f"Selected ROM: {selected_rom} for {device_codename} ({selected_section})")
 
 # Perform the actions based on the selected ROM
 # Add your logic here to build the selected ROM
