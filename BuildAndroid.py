@@ -56,6 +56,8 @@ else:
         f"repo init -u {manifest_url} -b {manifest_branch} --git-lfs -g default,-mips,-darwin,-notdefault")
     if exit_status == 0:
         print("Repo initialized successfully")
+        print("Syncing the sources")
+        sync_sources()
     else:
         print("Error in initializing repo. Please initialize it manually")
         
