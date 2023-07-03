@@ -59,12 +59,12 @@ def check_rom_repo_dirs():
         else:
             print("Repo directory does not exist. Initializing it")
             initialize_repo()
+            check_local_manifest_dir()
             sync_sources()
     else:
         print("ROM directory does not exist. Creating it")
         os.makedirs(rom_path)
         os.chdir(rom_path)
-
 
 def check_local_manifest_dir():
     if os.path.exists(rom_path + "/.repo/local_manifests"):
