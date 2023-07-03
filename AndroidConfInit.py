@@ -37,6 +37,10 @@ if choice == 1:
             "Manifest URL: (or press enter to use https://github.com/crdroidandroid/android.git)") or "https://github.com/crdroidandroid/android.git"
         rom["MANIFEST_BRANCH"] = input(
             "Manifest branch: (or press enter to use 13.0)") or "13.0"
+        rom["LOCAL_MANIFEST_URL"] = input(
+            "Local manifest URL: (or press enter to use https://github.com/akash07k/local_manifests)") or "https://github.com/akash07k/local_manifests.git"
+        rom["LOCAL_MANIFEST_BRANCH"] = input(
+            "Local manifest branch: (or press enter to use lineage)") or "lineage"
         roms.append(rom)
         print("Do you want to add another ROM?")
         print("1. Yes")
