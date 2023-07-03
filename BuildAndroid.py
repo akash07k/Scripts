@@ -18,10 +18,10 @@ for section in config.sections():
 
 choice: int = 0
 
-while choice is 0:
+while choice == 0:
     try:
         choice = int(input("Enter your choice: "))
-        if not 1 <= choice <= len(rom_choices):
+        if choice <1 or choice > len(rom_choices):
             print("Invalid choice. Please enter a valid option.")
             choice = 0
     except ValueError:
