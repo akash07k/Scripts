@@ -33,6 +33,10 @@ if choice == 1:
             "Device code name (or press enter to use munch): ") or "munch"
         rom["BUILD_VARIANT"] = input(
             "Build variant (or press enter to use userdebug): ") or "userdebug"
+        rom["MANIFEST_URL"] = input(
+            "Manifest URL: (or press enter to use https://github.com/crdroidandroid/android.git)") or "https://github.com/crdroidandroid/android.git"
+        rom["MANIFEST_BRANCH"] = input(
+            "Manifest branch: (or press enter to use 13.0)") or "13.0"
         roms.append(rom)
         print("Do you want to add another ROM?")
         print("1. Yes")
