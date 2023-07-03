@@ -40,6 +40,10 @@ build_variant: str = config.get(
     selected_section, "BUILD_VARIANT", fallback="userdebug")
 manifest_url: str = config.get(selected_section, "MANIFEST_URL")
 manifest_branch: str = config.get(selected_section, "MANIFEST_BRANCH")
+local_manifest_url: str = config.get(selected_section, "LOCAL_MANIFEST_URL")
+local_manifest_branch: str = config.get(
+    selected_section, "LOCAL_MANIFEST_BRANCH")
+
 print(
     f"Selected ROM: {selected_rom} for {device_codename} ({selected_section})")
 
@@ -62,6 +66,21 @@ def check_rom_repo_dirs():
         os.chdir(rom_path)
 
 
+def check_local_manifest_dir():
+    if os.path.exists(rom_path + "/.repo/local_manifests"):
+        print("Local manifest directory exists. Updating the repo")
+        os.chdir(rom_path + "/.repo/local_manifests")
+        exit_status = os.system("git pull --rebase")
+        if exit_status == 0:
+            print("Local manifest updated successfully")
+            os.chdir(rom_path)
+        else:
+            print("Error in updating local manifest. Please update it manually")
+    else:
+        print("Local manifest directory does not exist. Cloning the repo")
+        clone_local_manifest()
+
+
 def initialize_repo():
     exit_status = os.system(
         f"repo init -u {manifest_url} -b {manifest_branch} --git-lfs -g default,-mips,-darwin,-notdefault")
@@ -71,6 +90,15 @@ def initialize_repo():
         sync_sources()
     else:
         print("Error in initializing repo. Please initialize it manually")
+
+
+def clone_local_manifest():
+    exit_status = os.system(
+        f"git clone {local_manifest_url} -b {local_manifest_branch} {rom_path}/.repo/local_manifests")
+    if exit_status == 0:
+        print("Local manifest cloned successfully")
+    else:
+        print("Error in cloning the local manifest. Please clone it manually")
 
 
 def sync_sources():
@@ -94,6 +122,7 @@ def sync_sources():
             print("Synchronization completed successfully")
         else:
             print("Error in syncing the sources. Please sync the sources manually")
+
 
 # Performing the actions based on the selected ROM
 check_rom_repo_dirs()
