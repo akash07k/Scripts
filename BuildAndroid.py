@@ -31,10 +31,14 @@ while choice == 0:
 
 selected_rom: str = rom_choices[choice - 1]
 selected_section: str = rom_sections[choice - 1]
-device_codename: str = config.get(selected_section, "DEVICE_CODENAME", fallback="munch")
-rom_path: str = config.get(selected_section, "ROM_PATH", fallback="/mnt/wsl/rom/cr")
-build_variant: str = config.get(selected_section, "BUILD_VARIANT", fallback="userdebug")
-print(f"Selected ROM: {selected_rom} for {device_codename} ({selected_section})")
+device_codename: str = config.get(
+    selected_section, "DEVICE_CODENAME", fallback="munch")
+rom_path: str = config.get(
+    selected_section, "ROM_PATH", fallback="/mnt/wsl/rom/cr")
+build_variant: str = config.get(
+    selected_section, "BUILD_VARIANT", fallback="userdebug")
+print(
+    f"Selected ROM: {selected_rom} for {device_codename} ({selected_section})")
 
 # Perform the actions based on the selected ROM
 # Add your logic here to build the selected ROM
