@@ -95,9 +95,8 @@ def sync_sources():
         else:
             print("Error in syncing the sources. Please sync the sources manually")
 
-
 # Performing the actions based on the selected ROM
-# Check if the rom and repo directories exist
+check_rom_repo_dirs()
 
 
 print("Building process completed.")
