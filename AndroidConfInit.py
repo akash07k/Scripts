@@ -56,6 +56,15 @@ if choice == 1:
     for i, rom in enumerate(roms, start=1):
         rom_section: str = f"ROM{i}"
         config[rom_section] = rom
+if choice == 2:
+    telegram_section: str = "TELEGRAM"
+    config[telegram_section] = {}
+    config[telegram_section]["BOT_TOKEN"] = input("Bot Token: ")
+    config[telegram_section]["CHAT_ID"] = input("Chat ID: ")
+    config[telegram_section]["NAME"] = input(
+        "Name: (or press enter for Akash)") or "Akash"
+    config[telegram_section]["USER_NAME"] = input(
+        "User Name: (or press enter for @akashk07)") or "@akashk07"
 
 with open('config.ini', 'a') as configfile:  # Use 'a' mode to append
     config.write(configfile)
