@@ -9,11 +9,12 @@ config.read('config.ini')
 
 print("Which ROM do you want to build?")
 rom_choices: List[str] = []
-
+rom_sections: List[str] = []
 for section in config.sections():
     rom_name = config.get(section, "ROM_NAME", fallback=None)
     if rom_name is not None:
         rom_choices.append(rom_name)
+        rom_sections.append(section)
         print(f"{len(rom_choices)}. {rom_name}")
 
 choice: int = 0
@@ -21,7 +22,7 @@ choice: int = 0
 while choice == 0:
     try:
         choice = int(input("Enter your choice: "))
-        if choice <1 or choice > len(rom_choices):
+        if choice < 1 or choice > len(rom_choices):
             print("Invalid choice. Please enter a valid option.")
             choice = 0
     except ValueError:
@@ -29,7 +30,8 @@ while choice == 0:
         choice = 0
 
 selected_rom: str = rom_choices[choice - 1]
-print(f"Selected ROM: {selected_rom}")
+selected_section: str = rom_sections[choice - 1]
+print(f"Selected ROM: {selected_rom} ({selected_section})")
 
 # Perform the actions based on the selected ROM
 # Add your logic here to build the selected ROM
