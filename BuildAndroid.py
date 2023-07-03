@@ -59,5 +59,25 @@ else:
     else:
         print("Error in initializing repo. Please initialize it manually")
         
+def sync_sources():
+    print("Do you want to sync the sources?")
+    print("1. Yes")
+    print("2. No")
+    valid_choices: List[int] = [1, 2]
+    choice: int = 0
+
+    while choice not in valid_choices:
+        try:
+            choice = int(input("Enter your choice: "))
+            if choice not in valid_choices:
+                print("Invalid choice. Please enter a valid option.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+    if choice == 1:
+        exit_status = os.system("repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch")
+        if exit_status == 0:
+            print("Synchronization completed successfully")
+        else:
+            print("Error in syncing the sources. Please sync the sources manually")
 
 print("Building process completed.")
