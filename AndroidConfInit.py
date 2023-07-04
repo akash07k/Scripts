@@ -33,6 +33,8 @@ if choice == 1:
             "Device code name (or press enter to use munch): ") or "munch"
         rom["BUILD_VARIANT"] = input(
             "Build variant (or press enter to use userdebug): ") or "userdebug"
+        rom["BUILD_COMMAND"] = input(
+            "Build command (or press enter to use m bacon): ") or "m bacon"
         rom["MANIFEST_URL"] = input(
             "Manifest URL: (or press enter to use https://github.com/crdroidandroid/android.git)") or "https://github.com/crdroidandroid/android.git"
         rom["MANIFEST_BRANCH"] = input(
