@@ -27,6 +27,8 @@ if choice == 1:
         rom: Dict[str, str] = {}
         rom["ROM_NAME"] = input(
             "ROM name (or press enter to use crDroid): ") or "crDroid"
+        rom["lunch_name"] = input(
+            "Rom lunch name (or press enter to use lineage): ") or "lineage"
         rom["ROM_PATH"] = input(
             "ROM path (or press enter to use /mnt/wsl/rom/cr): ") or "/mnt/wsl/rom/cr"
         rom["DEVICE_CODENAME"] = input(
