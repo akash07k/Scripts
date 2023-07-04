@@ -1,5 +1,6 @@
 import configparser
 import os
+import subprocess
 from typing import List
 
 print("Welcome to Android builder")
@@ -52,58 +53,61 @@ print(
     f"Selected ROM: {selected_rom} for {device_codename} ({selected_section})")
 
 
-def check_rom_repo_dirs():
+def initialize():
     if os.path.exists(rom_path):
         print("ROM directory exists")
         os.chdir(rom_path)
         if os.path.exists(rom_path + "/.repo"):
             print("Repo directory exists")
-            print("Syncing the sources")
-            sync_sources()
+            return True
         else:
             print("Repo directory does not exist. Initializing it")
-            initialize_repo()
-            check_local_manifest_dir()
-            sync_sources()
+            if initialize_repo():
+                return True
     else:
         print("ROM directory does not exist. Creating it")
         os.makedirs(rom_path)
-        os.chdir(rom_path)
+        return True
 
 
-def check_local_manifest_dir():
+def initialize_local_manifests():
     if os.path.exists(rom_path + "/.repo/local_manifests"):
-        print("Local manifest directory exists. Updating the repo")
-        os.chdir(rom_path + "/.repo/local_manifests")
-        exit_status = os.system("git pull --rebase")
-        if exit_status == 0:
-            print("Local manifest updated successfully")
-            os.chdir(rom_path)
-        else:
-            print("Error in updating local manifest. Please update it manually")
+        print("Local manifest directory exists")
+        return True
     else:
         print("Local manifest directory does not exist. Cloning the repo")
-        clone_local_manifest()
+        if clone_local_manifest():
+            return True
+        else:
+            return False
 
 
 def initialize_repo():
-    exit_status = os.system(
-        f"repo init -u {manifest_url} -b {manifest_branch} --git-lfs -g default,-mips,-darwin,-notdefault")
-    if exit_status == 0:
-        print("Repo initialized successfully")
-        print("Syncing the sources")
-        sync_sources()
-    else:
-        print("Error in initializing repo. Please initialize it manually")
+    os.chdir(rom_path)
+    try:
+        result = subprocess.run(
+            f"repo init -u {manifest_url} -b {manifest_branch} --git-lfs -g default,-mips,-darwin,-notdefault", check=True, text=True)
+        print(result.stdout)
+        print(f"Repo initialized successfully")
+        return True
+    except subprocess.CalledProcessError as e:
+        print(
+            f"Error in initializing the repo. Please initialize it manually: {e.output}")
+        return False
 
 
 def clone_local_manifest():
-    exit_status = os.system(
-        f"git clone {local_manifest_url} -b {local_manifest_branch} {rom_path}/.repo/local_manifests")
-    if exit_status == 0:
-        print("Local manifest cloned successfully")
-    else:
-        print("Error in cloning the local manifest. Please clone it manually")
+    os.chdir(rom_path)
+    try:
+        result = subprocess.run(
+            f"git clone {local_manifest_url} -b {local_manifest_branch} {rom_path}/.repo/local_manifests", check=True, text=True)
+        print(result.stdout)
+        print(f"Local manifest cloned successfully")
+        return True
+    except subprocess.CalledProcessError as e:
+        print(
+            f"Error in cloning the local manifest. Please clone it manually: {e.output}")
+        return False
 
 
 def sync_sources():
@@ -122,49 +126,41 @@ def sync_sources():
             print("Invalid input. Please enter a number.")
     if choice == 1:
         os.chdir(rom_path)
-        exit_status = os.system(
-            "repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch")
-        if exit_status == 0:
-            print("Synchronization completed successfully")
-        else:
-            print("Error in syncing the sources. Please sync the sources manually")
+        try:
+            result = subprocess.run(
+                "repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch", check=True, text=True)
+            print(result.stdout)
+            print(f"Synchronization completed successfully")
+            return True
+        except subprocess.CalledProcessError as error:
+            print(
+                f"Error in syncing the sources. Please sync the sources manually: {error.output}")
+            return False
     if choice == 2:
         print("Skipping the sync")
-        os.chdir(rom_path)
+        return True
 
 
-def env_setup():
+def envsetup_lunch_build():
     os.chdir(rom_path)
-    exit_status = os.system("source build/envsetup.sh")
-    if exit_status == 0:
-        print("Environment setup completed successfully")
-    else:
-        print("Error in setting up the environment. Please set it up manually")
-
-
-def lunch():
-    os.chdir(rom_path)
-    exit_status = os.system(
-        f"lunch {lunch_name}_{device_codename}-{build_variant}")
-    if exit_status == 0:
-        print("Lunch completed successfully")
-    else:
-        print("Error in lunching the ROM. Please lunch it manually")
-
-
-def build():
-    os.chdir(rom_path)
-    exit_status = os.system(build_command)
-    if exit_status == 0:
+    envsetup_command: str = ". build/envsetup.sh"
+    lunch_command: str = f"lunch {lunch_name}_{device_codename}-{build_variant}"
+    consolidated_command = f"{envsetup_command} && {lunch_command}"
+    try:
+        result = subprocess.run(
+            ["bash", "-c", f"{envsetup_command} && {lunch_command} && {build_command}"], check=True, text=True)
         print("Build completed successfully")
-    else:
-        print("Error in building the ROM. Please build it manually")
+        print(result.stdout)
+        return True
+    except subprocess.CalledProcessError as e:
+        print("Error in building the rom, please build it manually:", e)
+        print("Output:")
+        print(e.output)
+        return False
 
 
 # Performing the actions based on the selected ROM
-check_rom_repo_dirs()
-env_setup()
-lunch()
-build()
-
-print("Building process completed.")
+if initialize() and initialize_local_manifests() and sync_sources() and envsetup_lunch_build():
+    print("Building process completed.")
+else:
+    print("Building process failed.")
