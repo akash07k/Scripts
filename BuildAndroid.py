@@ -32,6 +32,8 @@ while choice == 0:
 
 selected_rom: str = rom_choices[choice - 1]
 selected_section: str = rom_sections[choice - 1]
+lunch_name: str = config.get(
+    selected_section, "LUNCH_NAME", fallback="lineage")
 device_codename: str = config.get(
     selected_section, "DEVICE_CODENAME", fallback="munch")
 rom_path: str = config.get(
@@ -127,8 +129,38 @@ def sync_sources():
             print("Error in syncing the sources. Please sync the sources manually")
 
 
+def env_setup():
+    os.chdir(rom_path)
+    exit_status = os.system("source build/envsetup.sh")
+    if exit_status == 0:
+        print("Environment setup completed successfully")
+    else:
+        print("Error in setting up the environment. Please set it up manually")
+
+
+def lunch():
+    os.chdir(rom_path)
+    exit_status = os.system(
+        f"lunch {lunch_name}_{device_codename}-{build_variant}")
+    if exit_status == 0:
+        print("Lunch completed successfully")
+    else:
+        print("Error in lunching the ROM. Please lunch it manually")
+
+
+def build():
+    os.chdir(rom_path)
+    exit_status = os.system(build_command)
+    if exit_status == 0:
+        print("Build completed successfully")
+    else:
+        print("Error in building the ROM. Please build it manually")
+
+
 # Performing the actions based on the selected ROM
 check_rom_repo_dirs()
-
+env_setup()
+lunch()
+build()
 
 print("Building process completed.")
