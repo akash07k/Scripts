@@ -121,12 +121,16 @@ def sync_sources():
         except ValueError:
             print("Invalid input. Please enter a number.")
     if choice == 1:
+        os.chdir(rom_path)
         exit_status = os.system(
             "repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch")
         if exit_status == 0:
             print("Synchronization completed successfully")
         else:
             print("Error in syncing the sources. Please sync the sources manually")
+    if choice == 2:
+        print("Skipping the sync")
+        os.chdir(rom_path)
 
 
 def env_setup():
