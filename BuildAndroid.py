@@ -38,6 +38,8 @@ rom_path: str = config.get(
     selected_section, "ROM_PATH", fallback="/mnt/wsl/rom/cr")
 build_variant: str = config.get(
     selected_section, "BUILD_VARIANT", fallback="userdebug")
+build_command: str = config.get(
+    selected_section, "BUILD_COMMAND", fallback="m bacon -j$(nproc --all)")
 manifest_url: str = config.get(selected_section, "MANIFEST_URL")
 manifest_branch: str = config.get(selected_section, "MANIFEST_BRANCH")
 local_manifest_url: str = config.get(selected_section, "LOCAL_MANIFEST_URL")
@@ -65,6 +67,7 @@ def check_rom_repo_dirs():
         print("ROM directory does not exist. Creating it")
         os.makedirs(rom_path)
         os.chdir(rom_path)
+
 
 def check_local_manifest_dir():
     if os.path.exists(rom_path + "/.repo/local_manifests"):
