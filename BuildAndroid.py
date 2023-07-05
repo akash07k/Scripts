@@ -145,10 +145,10 @@ def envsetup_lunch_build():
     os.chdir(rom_path)
     envsetup_command: str = ". build/envsetup.sh"
     lunch_command: str = f"lunch {lunch_name}_{device_codename}-{build_variant}"
-    consolidated_command = f"{envsetup_command} && {lunch_command}"
+    consolidated_command = f"{envsetup_command} && {lunch_command} && {build_command}"
     try:
         result = subprocess.run(
-            ["bash", "-c", f"{envsetup_command} && {lunch_command} && {build_command}"], check=True, text=True)
+            ["bash", "-c", consolidated_command], check=True, text=True)
         print("Build completed successfully")
         print(result.stdout)
         return True
