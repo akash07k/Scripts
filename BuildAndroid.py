@@ -113,6 +113,20 @@ def clone_local_manifest():
 
 
 def sync_sources():
+    os.chdir(rom_path)
+    try:
+        result = subprocess.run(["bash", "-c",
+                                 repo_sync_command], check=True, text=True)
+        print(result.stdout)
+        print(f"Synchronization completed successfully")
+        return True
+    except subprocess.CalledProcessError as error:
+        print(
+            f"Error in syncing the sources. Please sync the sources manually: {error.output}")
+        return False
+
+
+def prompt_sync_sources():
     print("Do you want to sync the sources?")
     print("1. Yes")
     print("2. No")
@@ -127,17 +141,7 @@ def sync_sources():
         except ValueError:
             print("Invalid input. Please enter a number.")
     if choice == 1:
-        os.chdir(rom_path)
-        try:
-            result = subprocess.run(["bash", "-c",
-                                     repo_sync_command], check=True, text=True)
-            print(result.stdout)
-            print(f"Synchronization completed successfully")
-            return True
-        except subprocess.CalledProcessError as error:
-            print(
-                f"Error in syncing the sources. Please sync the sources manually: {error.output}")
-            return False
+        sync_sources()
     if choice == 2:
         print("Skipping the sync")
         return True
@@ -162,7 +166,7 @@ def envsetup_lunch_build():
 
 
 # Performing the actions based on the selected ROM
-if initialize() and initialize_local_manifests() and sync_sources() and envsetup_lunch_build():
+if initialize() and initialize_local_manifests() and prompt_sync_sources() and envsetup_lunch_build():
     print("Building process completed.")
 else:
     print("Building process failed.")
