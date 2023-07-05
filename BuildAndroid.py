@@ -50,6 +50,7 @@ manifest_branch: str = config.get(selected_section, "MANIFEST_BRANCH")
 local_manifest_url: str = config.get(selected_section, "LOCAL_MANIFEST_URL")
 local_manifest_branch: str = config.get(
     selected_section, "LOCAL_MANIFEST_BRANCH")
+sync_then_build = False
 
 print(
     f"Selected ROM: {selected_rom} for {device_codename} ({selected_section})")
@@ -130,6 +131,7 @@ def prompt_sync_sources():
     print("Do you want to sync the sources?")
     print("1. Yes")
     print("2. No")
+    print("3. Sync then build")
     valid_choices: List[int] = [1, 2]
     choice: int = 0
 
@@ -145,10 +147,15 @@ def prompt_sync_sources():
     if choice == 2:
         print("Skipping the sync")
         return True
+    if choice == 3:
+        sync_then_build = True
+        return False
 
 
 def envsetup_lunch_build():
     os.chdir(rom_path)
+    if sync_then_build:
+        sync_sources()
     envsetup_command: str = ". build/envsetup.sh"
     lunch_command: str = f"lunch {lunch_name}_{device_codename}-{build_variant}"
     consolidated_command = f"{envsetup_command} && {lunch_command} && {build_command}"
