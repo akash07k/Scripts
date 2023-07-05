@@ -35,6 +35,7 @@ selected_rom: str = rom_choices[choice - 1]
 selected_section: str = rom_sections[choice - 1]
 repo_sync_command: str = config.get(selected_section, "REPO_SYNC_COMMAND",
                                     fallback="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch")
+sync_then_build: bool = False
 lunch_name: str = config.get(
     selected_section, "LUNCH_NAME", fallback="lineage")
 device_codename: str = config.get(
@@ -50,7 +51,7 @@ manifest_branch: str = config.get(selected_section, "MANIFEST_BRANCH")
 local_manifest_url: str = config.get(selected_section, "LOCAL_MANIFEST_URL")
 local_manifest_branch: str = config.get(
     selected_section, "LOCAL_MANIFEST_BRANCH")
-sync_then_build = False
+
 
 print(
     f"Selected ROM: {selected_rom} for {device_codename} ({selected_section})")
@@ -132,7 +133,7 @@ def prompt_sync_sources():
     print("1. Yes")
     print("2. No")
     print("3. Sync then build")
-    valid_choices: List[int] = [1, 2]
+    valid_choices: List[int] = [1, 2, 3]
     choice: int = 0
 
     while choice not in valid_choices:
@@ -148,8 +149,8 @@ def prompt_sync_sources():
         print("Skipping the sync")
         return True
     if choice == 3:
-        sync_then_build = True
-        return False
+        sync_then_build = True        
+        return True
 
 
 def envsetup_lunch_build():
@@ -158,7 +159,25 @@ def envsetup_lunch_build():
         sync_sources()
     envsetup_command: str = ". build/envsetup.sh"
     lunch_command: str = f"lunch {lunch_name}_{device_codename}-{build_variant}"
-    consolidated_command = f"{envsetup_command} && {lunch_command} && {build_command}"
+    consolidated_command: str = f"{envsetup_command} && {lunch_command} && {build_command}"
+    print("Do you want a clean build?")
+    print("1. No")
+    print("2. Yes")
+    valid_choices: List[int] = [1, 2]
+    choice: int = 0
+    while choice not in valid_choices:
+        try:
+            choice = int(input("Enter your choice: "))
+            if choice not in valid_choices:
+                print("Invalid choice. Please enter a valid option.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+    if choice == 1:
+        consolidated_command: str = f"{envsetup_command} && {lunch_command} && {build_command}"
+    if choice == 2:
+        clean_command: str = "m clean -j$(nproc --all)"
+        consolidated_command: str = f"{envsetup_command} && {clean_command} && {lunch_command} && {build_command}"
+
     try:
         result = subprocess.run(
             ["bash", "-c", consolidated_command], check=True, text=True)
