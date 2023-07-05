@@ -33,6 +33,8 @@ while choice == 0:
 
 selected_rom: str = rom_choices[choice - 1]
 selected_section: str = rom_sections[choice - 1]
+repo_sync_command: str = config.get(selected_section, "REPO_SYNC_COMMAND",
+                                    fallback="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch")
 lunch_name: str = config.get(
     selected_section, "LUNCH_NAME", fallback="lineage")
 device_codename: str = config.get(
@@ -128,7 +130,7 @@ def sync_sources():
         os.chdir(rom_path)
         try:
             result = subprocess.run(["bash", "-c",
-                                     "repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch"], check=True, text=True)
+                                     repo_sync_command], check=True, text=True)
             print(result.stdout)
             print(f"Synchronization completed successfully")
             return True

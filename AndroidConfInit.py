@@ -27,6 +27,8 @@ if choice == 1:
         rom: Dict[str, str] = {}
         rom["ROM_NAME"] = input(
             "ROM name (or press enter to use crDroid): ") or "crDroid"
+        rom["REPO_SYNC_COMMAND"] = input(
+            "Repo sync command (or press enter for repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch") or "repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch"
         rom["lunch_name"] = input(
             "Rom lunch name (or press enter to use lineage): ") or "lineage"
         rom["ROM_PATH"] = input(
