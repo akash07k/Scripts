@@ -85,8 +85,8 @@ def initialize_local_manifests():
 def initialize_repo():
     os.chdir(rom_path)
     try:
-        result = subprocess.run(
-            f"repo init -u {manifest_url} -b {manifest_branch} --git-lfs -g default,-mips,-darwin,-notdefault", check=True, text=True)
+        result = subprocess.run(["bash", "-c",
+                                 f"repo init -u {manifest_url} -b {manifest_branch} --git-lfs -g default,-mips,-darwin,-notdefault"], check=True, text=True)
         print(result.stdout)
         print(f"Repo initialized successfully")
         return True
@@ -99,8 +99,8 @@ def initialize_repo():
 def clone_local_manifest():
     os.chdir(rom_path)
     try:
-        result = subprocess.run(
-            f"git clone {local_manifest_url} -b {local_manifest_branch} {rom_path}/.repo/local_manifests", check=True, text=True)
+        result = subprocess.run(["bash", "-c",
+                                 f"git clone {local_manifest_url} -b {local_manifest_branch} {rom_path}/.repo/local_manifests"], check=True, text=True)
         print(result.stdout)
         print(f"Local manifest cloned successfully")
         return True
@@ -127,8 +127,8 @@ def sync_sources():
     if choice == 1:
         os.chdir(rom_path)
         try:
-            result = subprocess.run(
-                "repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch", check=True, text=True)
+            result = subprocess.run(["bash", "-c",
+                                     "repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch"], check=True, text=True)
             print(result.stdout)
             print(f"Synchronization completed successfully")
             return True
