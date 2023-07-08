@@ -31,8 +31,36 @@ while choice == 0:
         print("Invalid input. Please enter a number.")
         choice = 0
 
+print("Which telegram config you want to use for sending the notifications?")
+telegram_choices: List[str] = []
+telegram_sections: List[str] = []
+for section in config.sections():
+    telegram_name: str = config.get(section, "telegram_name", fallback="Akash")
+    if telegram_name is not None:  # type : ignore # type: ignore
+        telegram_choices.append(telegram_name)
+        telegram_sections.append(section)
+        print(f"{len(telegram_choices)}. {telegram_name}")
+choice: int = 0
+while choice == 0:
+    try:
+        choice = int(input("Enter your choice: "))
+        if choice < 1 or choice > len(telegram_choices):
+            print("Invalid choice. Please enter a valid option.")
+            choice = 0
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+        choice = 0
+
+
 selected_rom: str = rom_choices[choice - 1]
 selected_section: str = rom_sections[choice - 1]
+selected_telegram: str = telegram_choices[choice - 1]
+selected_telegram_section: str = telegram_sections[choice - 1]
+telegram_token: str = config.get(selected_telegram_section, "TELEGRAM_TOKEN")
+telegram_chat_id: str = config.get(
+    selected_telegram_section, "TELEGRAM_CHAT_ID")
+telegram_user_name: str = config.get(
+    selected_telegram_section, "TELEGRAM_USER_NAME")
 repo_sync_command: str = config.get(selected_section, "REPO_SYNC_COMMAND",
                                     fallback="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch")
 sync_then_build: bool = False
