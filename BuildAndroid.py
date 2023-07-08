@@ -144,15 +144,17 @@ def prompt_sync_sources():
         except ValueError:
             print("Invalid input. Please enter a number.")
     if choice == 1:
-        sync_sources()
-        return True
+        result = sync_sources()
+        if not result:
+            return
+        return result
     if choice == 2:
         print("Skipping the sync")
         return True
     if choice == 3:
         global sync_then_build
         print("Sources will be synced right before the build")
-        sync_then_build = True        
+        sync_then_build = True
         return sync_then_build
 
 
