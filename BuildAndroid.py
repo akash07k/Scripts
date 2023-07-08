@@ -158,8 +158,6 @@ def prompt_sync_sources():
 
 def envsetup_lunch_build():
     os.chdir(rom_path)
-    if sync_then_build:
-        sync_sources()
     envsetup_command: str = ". build/envsetup.sh"
     lunch_command: str = f"lunch {lunch_name}_{device_codename}-{build_variant}"
     consolidated_command: str = f"{envsetup_command} && {lunch_command} && {build_command}"
@@ -182,6 +180,8 @@ def envsetup_lunch_build():
         consolidated_command: str = f"{envsetup_command} && {clean_command} && {lunch_command} && {build_command}"
 
     try:
+        if sync_then_build:
+            sync_sources()
         result = subprocess.run(
             ["bash", "-c", consolidated_command], check=True, text=True)
         print("Build completed successfully")
