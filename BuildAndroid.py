@@ -181,7 +181,9 @@ def envsetup_lunch_build():
 
     try:
         if sync_then_build:
-            sync_sources()
+            result = sync_sources()
+            if not result:
+                return
         result = subprocess.run(
             ["bash", "-c", consolidated_command], check=True, text=True)
         print("Build completed successfully")
