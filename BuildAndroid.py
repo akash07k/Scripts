@@ -150,6 +150,7 @@ def prompt_sync_sources():
         print("Skipping the sync")
         return True
     if choice == 3:
+        print("Sources will be synced right before the build")
         sync_then_build = True        
         return sync_then_build
 
