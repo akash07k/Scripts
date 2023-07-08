@@ -68,6 +68,8 @@ def initialize():
             print("Repo directory does not exist. Initializing it")
             if initialize_repo():
                 return True
+            else:
+                return False
     else:
         print("ROM directory does not exist. Creating it")
         os.makedirs(rom_path)
