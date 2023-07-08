@@ -57,7 +57,7 @@ print(
     f"Selected ROM: {selected_rom} for {device_codename} ({selected_section})")
 
 
-def initialize():
+def initialize() -> bool:
     if os.path.exists(rom_path):
         print("ROM directory exists")
         os.chdir(rom_path)
@@ -76,7 +76,7 @@ def initialize():
         return True
 
 
-def initialize_local_manifests():
+def initialize_local_manifests() -> bool:
     if os.path.exists(rom_path + "/.repo/local_manifests"):
         print("Local manifest directory exists")
         return True
@@ -88,7 +88,7 @@ def initialize_local_manifests():
             return False
 
 
-def initialize_repo():
+def initialize_repo() -> bool:
     os.chdir(rom_path)
     try:
         result = subprocess.run(["bash", "-c",
@@ -102,7 +102,7 @@ def initialize_repo():
         return False
 
 
-def clone_local_manifest():
+def clone_local_manifest() -> bool:
     os.chdir(rom_path)
     try:
         result = subprocess.run(["bash", "-c",
@@ -116,7 +116,7 @@ def clone_local_manifest():
         return False
 
 
-def sync_sources():
+def sync_sources() -> bool:
     os.chdir(rom_path)
     try:
         result = subprocess.run(["bash", "-c",
@@ -130,7 +130,7 @@ def sync_sources():
         return False
 
 
-def prompt_sync_sources():
+def prompt_sync_sources() -> bool:
     print("Do you want to sync the sources?")
     print("1. Yes")
     print("2. No")
@@ -148,7 +148,7 @@ def prompt_sync_sources():
     if choice == 1:
         result = sync_sources()
         if not result:
-            return
+            return False
         return result
     if choice == 2:
         print("Skipping the sync")
@@ -158,9 +158,11 @@ def prompt_sync_sources():
         print("Sources will be synced right before the build")
         sync_then_build = True
         return sync_then_build
+    else:
+        return False
 
 
-def envsetup_lunch_build():
+def envsetup_lunch_build() -> bool:
     os.chdir(rom_path)
     envsetup_command: str = ". build/envsetup.sh"
     lunch_command: str = f"lunch {lunch_name}_{device_codename}-{build_variant}"
@@ -187,7 +189,7 @@ def envsetup_lunch_build():
         if sync_then_build:
             result = sync_sources()
             if not result:
-                return
+                return False
         result = subprocess.run(
             ["bash", "-c", consolidated_command], check=True, text=True)
         print("Build completed successfully")
