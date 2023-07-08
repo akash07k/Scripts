@@ -151,7 +151,7 @@ def prompt_sync_sources():
         return True
     if choice == 3:
         sync_then_build = True        
-        return True
+        return sync_then_build
 
 
 def envsetup_lunch_build():
