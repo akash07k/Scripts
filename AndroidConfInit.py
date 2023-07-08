@@ -1,25 +1,8 @@
 from typing import List, Dict
 import configparser
 
-config = configparser.ConfigParser()
-print("Welcome to Configuration Initializer")
-print("By Akash Kakkar")
-print("What do you want to do?")
-print("1. Add a new ROM and device to configuration")
-print("2. Add telegram config")
 
-valid_choices: List[int] = [1, 2, 3]
-choice: int = 0
-
-while choice not in valid_choices:
-    try:
-        choice = int(input("Enter your choice: "))
-        if choice not in valid_choices:
-            print("Invalid choice. Please enter a valid option.")
-    except ValueError:
-        print("Invalid input. Please enter a number.")
-
-if choice == 1:
+def add_rom_config():
     roms: List[Dict[str, str]] = []
     add_rom: bool = True
 
@@ -66,7 +49,9 @@ if choice == 1:
     for i, rom in enumerate(roms, start=1):
         rom_section: str = f"ROM{i}"
         config[rom_section] = rom
-if choice == 2:
+
+
+def add_telegram_config():
     telegram_configs: List[Dict[str, str]] = []
     add_telegram_config: bool = True
     while add_telegram_config:
@@ -100,6 +85,30 @@ if choice == 2:
     for i, telegram_config in enumerate(telegram_configs, start=1):
         telegram_section: str = f"TELEGRAM{i}"
         config[telegram_section] = telegram_config
+
+
+config = configparser.ConfigParser()
+print("Welcome to Configuration Initializer")
+print("By Akash Kakkar")
+print("What do you want to do?")
+print("1. Add a new ROM and device to configuration")
+print("2. Add telegram config")
+
+valid_choices: List[int] = [1, 2, 3]
+choice: int = 0
+
+while choice not in valid_choices:
+    try:
+        choice = int(input("Enter your choice: "))
+        if choice not in valid_choices:
+            print("Invalid choice. Please enter a valid option.")
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+
+if choice == 1:
+    add_rom_config()
+elif choice == 2:
+    add_telegram_config()
 
 
 with open('config.ini', 'a') as configfile:  # Use 'a' mode to append
