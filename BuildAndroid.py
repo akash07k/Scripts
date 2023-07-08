@@ -145,6 +145,7 @@ def prompt_sync_sources():
             print("Invalid input. Please enter a number.")
     if choice == 1:
         sync_sources()
+        return True
     if choice == 2:
         print("Skipping the sync")
         return True
