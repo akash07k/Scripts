@@ -37,7 +37,7 @@ telegram_choices: List[str] = []
 telegram_sections: List[str] = []
 for section in config.sections():
     telegram_name: str = config.get(section, "telegram_name", fallback="Akash")
-    if telegram_name is not None:  # type : ignore # type: ignore
+    if telegram_name is not None: # type: ignore
         telegram_choices.append(telegram_name)
         telegram_sections.append(section)
         print(f"{len(telegram_choices)}. {telegram_name}")
