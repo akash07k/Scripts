@@ -18,7 +18,7 @@ for section in config.sections():
     if rom_name is not None:
         rom_choices.append(rom_name)
         rom_sections.append(section)
-        print(f"{len(rom_choices)}. {rom_name}")
+        print(f"{len(rom_choices)}. {rom_name} ({section})")
 
 choice: int = 0
 
@@ -36,11 +36,11 @@ print("Which telegram config you want to use for sending the notifications?")
 telegram_choices: List[str] = []
 telegram_sections: List[str] = []
 for section in config.sections():
-    telegram_name: str = config.get(section, "telegram_name", fallback="Akash")
-    if telegram_name is not None: # type: ignore
+    telegram_name = config.get(section, "TELEGRAM_CONFIG_NAME", fallback=None)
+    if telegram_name is not None:
         telegram_choices.append(telegram_name)
         telegram_sections.append(section)
-        print(f"{len(telegram_choices)}. {telegram_name}")
+        print(f"{len(telegram_choices)}. {telegram_name} ({section})")
 choice: int = 0
 while choice == 0:
     try:
