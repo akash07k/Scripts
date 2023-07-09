@@ -1,4 +1,5 @@
 import configparser
+import glob
 import os
 import subprocess
 from typing import List
@@ -82,6 +83,7 @@ manifest_branch: str = config.get(selected_section, "MANIFEST_BRANCH")
 local_manifest_url: str = config.get(selected_section, "LOCAL_MANIFEST_URL")
 local_manifest_branch: str = config.get(
     selected_section, "LOCAL_MANIFEST_BRANCH")
+upload_command: str = config.get(selected_section, "UPLOAD_COMMAND")
 
 
 print(
@@ -256,6 +258,7 @@ def envsetup_lunch_build() -> bool:
         print(message)
         bot.send_message(message)
         print(result.stdout)
+        upload_build()
         return True
     except subprocess.CalledProcessError as e:
         print("Error in building the rom, please build it manually:", e.stderr)
@@ -263,6 +266,46 @@ def envsetup_lunch_build() -> bool:
         print("Output:")
         print(e.output)
         return False
+
+
+def get_latest_file(extension: str = ".zip", directory: str = f"out/target/product/{device_codename}") -> str:
+    # Create a list of all .zip files in the directory
+    file_list = glob.glob(os.path.join(directory, f'*{extension}'))
+    # Sort the list of files by modification time
+    sorted_files = sorted(file_list, key=os.path.getmtime)
+    if sorted_files:
+        # Get the latest file
+        latest_file = sorted_files[-1]
+        print(f"Latest {extension} file:", latest_file)
+        return latest_file
+    else:
+        print(f"No {extension} files found in the directory.")
+        return "None"
+
+
+def upload_build():
+    os.chdir(rom_path)
+    global upload_command
+    latest_build = get_latest_file(
+        extension=".zip", directory=f"out/target/product/{device_codename}")
+    if latest_build != "None":
+        print("Uploading the build")
+        bot.send_message("Uploading the build")
+        if "{uploadfile}" in upload_command:
+            upload_command = upload_command.replace(
+                "{uploadfile}", f"{latest_build}")
+        try:
+            result = subprocess.run(["bash", "-c",
+                                     upload_command], check=True, text=True)
+            print(result.stdout)
+            message = "Build uploaded successfully"
+            print(message)
+            bot.send_message(message)
+        except subprocess.CalledProcessError as e:
+            print("Error in uploading the build, please upload it manually:", e.stderr)
+            bot.send_message(f"Error in uploading the build {e.stderr}")
+            print("Output:")
+            print(e.output)
 
 
 # Performing the actions based on the selected ROM

@@ -30,6 +30,8 @@ def add_rom_config():
             "Local manifest URL: (or press enter to use https://github.com/akash07k/local_manifests)") or "https://github.com/akash07k/local_manifests.git"
         rom["LOCAL_MANIFEST_BRANCH"] = input(
             "Local manifest branch: (or press enter to use lineage)") or "lineage"
+        rom["UPLOAD_COMMAND"] = input(
+            "Upload command (or press enter to use curl --ssl -k -T {uploadfile} ftp://{remote_hostname}/{device_uploadpath}/ --user {username}:{password}): ") or "curl --ssl -k -T {uploadfile} ftp://{remote_hostname}/{device_uploadpath}/ --user {username}:{password}"
         roms.append(rom)
         print("Do you want to add another ROM?")
         print("1. Yes")
