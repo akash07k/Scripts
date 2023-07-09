@@ -2,6 +2,7 @@ import configparser
 import os
 import subprocess
 from typing import List
+from telegram_messenger import TelegramMessenger
 
 print("Welcome to Android builder")
 print("By Akash Kakkar")
@@ -61,6 +62,7 @@ telegram_chat_id: str = config.get(
     selected_telegram_section, "TELEGRAM_CHAT_ID")
 telegram_user_name: str = config.get(
     selected_telegram_section, "TELEGRAM_USER_NAME")
+bot = TelegramMessenger(token=telegram_token, chat_id=telegram_chat_id)
 repo_sync_command: str = config.get(selected_section, "REPO_SYNC_COMMAND",
                                     fallback="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch")
 sync_then_build: bool = False
@@ -86,6 +88,7 @@ print(
 
 
 def initialize() -> bool:
+    bot.send_message(f"Starting to build: {selected_rom} for {device_codename} ({selected_section})")
     if os.path.exists(rom_path):
         print("ROM directory exists")
         os.chdir(rom_path)
