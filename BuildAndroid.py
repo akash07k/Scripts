@@ -57,7 +57,7 @@ selected_rom: str = rom_choices[choice - 1]
 selected_section: str = rom_sections[choice - 1]
 selected_telegram: str = telegram_choices[choice - 1]
 selected_telegram_section: str = telegram_sections[choice - 1]
-telegram_token: str = config.get(selected_telegram_section, "TELEGRAM_TOKEN")
+telegram_token: str = config.get(selected_telegram_section, "TELEGRAM_BOT_TOKEN")
 telegram_chat_id: str = config.get(
     selected_telegram_section, "TELEGRAM_CHAT_ID")
 telegram_user_name: str = config.get(
