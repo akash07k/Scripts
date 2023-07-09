@@ -57,7 +57,8 @@ selected_rom: str = rom_choices[choice - 1]
 selected_section: str = rom_sections[choice - 1]
 selected_telegram: str = telegram_choices[choice - 1]
 selected_telegram_section: str = telegram_sections[choice - 1]
-telegram_token: str = config.get(selected_telegram_section, "TELEGRAM_BOT_TOKEN")
+telegram_token: str = config.get(
+    selected_telegram_section, "TELEGRAM_BOT_TOKEN")
 telegram_chat_id: str = config.get(
     selected_telegram_section, "TELEGRAM_CHAT_ID")
 telegram_user_name: str = config.get(
@@ -88,7 +89,8 @@ print(
 
 
 def initialize() -> bool:
-    bot.send_message(f"Starting to build: {selected_rom} for {device_codename} ({selected_section})")
+    bot.send_message(
+        f"Preparing to build: {selected_rom} for {device_codename} ({selected_section})")
     if os.path.exists(rom_path):
         print("ROM directory exists")
         os.chdir(rom_path)
@@ -108,28 +110,40 @@ def initialize() -> bool:
 
 
 def initialize_local_manifests() -> bool:
+    message = "Initializing the local manifests"
+    print(message)
+    bot.send_message(message)
     if os.path.exists(rom_path + "/.repo/local_manifests"):
         print("Local manifest directory exists")
         return True
     else:
         print("Local manifest directory does not exist. Cloning the repo")
         if clone_local_manifest():
+            message = "Local manifests cloned successfully"
+            print(message)
+            bot.send_message(message)
             return True
         else:
             return False
 
 
 def initialize_repo() -> bool:
+    message = "Initializing the repo"
+    print(message)
+    bot.send_message(message)
     os.chdir(rom_path)
     try:
         result = subprocess.run(["bash", "-c",
                                  f"repo init -u {manifest_url} -b {manifest_branch} --git-lfs -g default,-mips,-darwin,-notdefault"], check=True, text=True)
         print(result.stdout)
-        print(f"Repo initialized successfully")
+        message = f"Repo initialized successfully"
+        print(message)
+        bot.send_message(message)
         return True
     except subprocess.CalledProcessError as e:
         print(
-            f"Error in initializing the repo. Please initialize it manually: {e.output}")
+            f"Error in initializing the repo. Please initialize it manually: {e.stdout}")
+        bot.send_message("Error in initializing the repo")
         return False
 
 
@@ -144,16 +158,22 @@ def clone_local_manifest() -> bool:
     except subprocess.CalledProcessError as e:
         print(
             f"Error in cloning the local manifest. Please clone it manually: {e.output}")
+        bot.send_message("Error in cloning the local manifest")
         return False
 
 
 def sync_sources() -> bool:
+    message = "Synchronizing the sources"
+    print(message)
+    bot.send_message(message)
     os.chdir(rom_path)
     try:
         result = subprocess.run(["bash", "-c",
                                  repo_sync_command], check=True, text=True)
         print(result.stdout)
-        print(f"Synchronization completed successfully")
+        message = f"Synchronization completed successfully"
+        print(message)
+        bot.send_message(message)
         return True
     except subprocess.CalledProcessError as error:
         print(
@@ -194,6 +214,8 @@ def prompt_sync_sources() -> bool:
 
 
 def envsetup_lunch_build() -> bool:
+    message = "Proceeding with the build"
+    print(message)
     os.chdir(rom_path)
     envsetup_command: str = ". build/envsetup.sh"
     lunch_command: str = f"lunch {lunch_name}_{device_codename}-{build_variant}"
@@ -212,22 +234,32 @@ def envsetup_lunch_build() -> bool:
             print("Invalid input. Please enter a number.")
     if choice == 1:
         consolidated_command: str = f"{envsetup_command} && {lunch_command} && {build_command}"
+        message = "Proceeding with a dirty build"
+        bot.send_message(message)
     if choice == 2:
         clean_command: str = "m clean -j$(nproc --all)"
         consolidated_command: str = f"{envsetup_command} && {clean_command} && {lunch_command} && {build_command}"
+        message = "Proceeding with a clean build"
+        bot.send_message(message)
 
     try:
         if sync_then_build:
             result = sync_sources()
             if not result:
                 return False
+        message = "Building the rom"
+        print(message)
+        bot.send_message(message)
         result = subprocess.run(
             ["bash", "-c", consolidated_command], check=True, text=True)
-        print("Build completed successfully")
+        message = "Build completed successfully"
+        print(message)
+        bot.send_message(message)
         print(result.stdout)
         return True
     except subprocess.CalledProcessError as e:
-        print("Error in building the rom, please build it manually:", e)
+        print("Error in building the rom, please build it manually:", e.stderr)
+        bot.send_message(f"Error in building the rom {e.stderr}")
         print("Output:")
         print(e.output)
         return False
