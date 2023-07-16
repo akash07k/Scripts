@@ -1,5 +1,6 @@
 from typing import List, Dict
 import configparser
+import os
 
 
 def add_rom_config():
@@ -73,7 +74,11 @@ if choice == 1:
     add_rom_config()
 
 
-with open("configs/roms.ini", "a") as configfile:  # Use 'a' mode to append
-    config.write(configfile)
+# Check if "configs" directory exists, and create it if it doesn't
+if not os.path.exists("configs"):
+    os.makedirs("configs")
 
+# Write or append the configuration file
+with open("configs/telegram.ini", "a") as configfile:
+    config.write(configfile)
 print("Configuration file created/appended successfully")

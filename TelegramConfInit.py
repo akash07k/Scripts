@@ -1,5 +1,6 @@
 from typing import List, Dict
 import configparser
+import os
 
 
 def add_telegram_config():
@@ -57,6 +58,11 @@ while choice not in valid_choices:
 if choice == 1:
     add_telegram_config()
 
+# Check if "configs" directory exists, and create it if it doesn't
+if not os.path.exists("configs"):
+    os.makedirs("configs")
+
+# Write or append the configuration file
 with open("configs/telegram.ini", "a") as configfile:
     config.write(configfile)
 print("Configuration file created/appended successfully")
