@@ -74,11 +74,12 @@ if choice == 1:
     add_rom_config()
 
 
-# Check if "configs" directory exists, and create it if it doesn't
-if not os.path.exists("configs"):
-    os.makedirs("configs")
+def write_configuration():
+    # Check if "configs" directory exists, and create it if it doesn't
+    if not os.path.exists("configs"):
+        os.makedirs("configs")
 
-# Write or append the configuration file
-with open("configs/telegram.ini", "a") as configfile:
-    config.write(configfile)
-print("Configuration file created/appended successfully")
+    # Write or append the configuration file
+    with open("configs/telegram.ini", "a") as configfile:
+        config.write(configfile)
+    print("Configuration file created/appended successfully")
