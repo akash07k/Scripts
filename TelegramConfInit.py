@@ -19,10 +19,10 @@ def write_configuration() -> bool:
     if not os.path.exists(CONFIG_DIR):
         os.makedirs(CONFIG_DIR)
 
-    # Write or append the configuration file
-    with open(CONFIG_FILE, "a") as configfile:
+    # Write the entire configuration to the file
+    with open(CONFIG_FILE, "w") as configfile:
         config.write(configfile)
-    click.echo("Configuration file created/appended successfully")
+    click.echo("Configuration written to the file successfully")
     return True
 
 
@@ -48,12 +48,18 @@ def add_config(name: str, token: str, chatid: str, username: str) -> bool:
             f"Configuration section '{name}_Telegram' already exists. Please choose a different name.")
         return False
 
+    # Read the existing configurations
+    config.read(CONFIG_FILE)
+
+    # Add the new configuration
     config[f"{name}_Telegram"] = {
         "name": name,
         "token": token,
         "chatid": chatid,
         "username": username
     }
+
+    # Write the updated configuration to the file
     write_configuration()
     return True
 
