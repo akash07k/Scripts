@@ -61,6 +61,12 @@ def add_config(name: str, token: str, chatid: str, username: str) -> bool:
 
     # Write the updated configuration to the file
     write_configuration()
+    add_another = click.confirm(
+        "Do you want to add another config?", default=False)
+    if add_another:
+        add_config()
+    else:
+        click.echo("Bye bye!")
     return True
 
 
