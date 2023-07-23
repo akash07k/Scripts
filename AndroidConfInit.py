@@ -1,85 +1,98 @@
-from typing import List, Dict
+import click
 import configparser
 import os
 
 
-def add_rom_config():
-    roms: List[Dict[str, str]] = []
-    add_rom: bool = True
-
-    while add_rom:
-        rom: Dict[str, str] = {}
-        rom["ROM_NAME"] = input(
-            "ROM name (or press enter to use crDroid): ") or "crDroid"
-        rom["REPO_SYNC_COMMAND"] = input(
-            "Repo sync command (or press enter for repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch") or "repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch"
-        rom["lunch_name"] = input(
-            "Rom lunch name (or press enter to use lineage): ") or "lineage"
-        rom["ROM_PATH"] = input(
-            "ROM path (or press enter to use /mnt/wsl/rom/cr): ") or "/mnt/wsl/rom/cr"
-        rom["DEVICE_CODENAME"] = input(
-            "Device code name (or press enter to use munch): ") or "munch"
-        rom["BUILD_VARIANT"] = input(
-            "Build variant (or press enter to use userdebug): ") or "userdebug"
-        rom["BUILD_COMMAND"] = input(
-            "Build command (or press enter to use m bacon): ") or "m bacon"
-        rom["MANIFEST_URL"] = input(
-            "Manifest URL: (or press enter to use https://github.com/crdroidandroid/android.git)") or "https://github.com/crdroidandroid/android.git"
-        rom["MANIFEST_BRANCH"] = input(
-            "Manifest branch: (or press enter to use 13.0)") or "13.0"
-        rom["LOCAL_MANIFEST_URL"] = input(
-            "Local manifest URL: (or press enter to use https://github.com/akash07k/local_manifests)") or "https://github.com/akash07k/local_manifests.git"
-        rom["LOCAL_MANIFEST_BRANCH"] = input(
-            "Local manifest branch: (or press enter to use lineage)") or "lineage"
-        rom["UPLOAD_COMMAND"] = input(
-            "Upload command (or press enter to use curl --ssl -k -T {uploadfile} ftp://uploadme.example.com/files/munch/9.x/ --user username:password): ") or "curl --ssl -k -T {uploadfile} ftp://uploadme.example.com/files/munch/9.x/ --user username:password"
-        roms.append(rom)
-        print("Do you want to add another ROM?")
-        print("1. Yes")
-        print("2. No")
-        valid_choices: List[int] = [1, 2]
-        choice: int = 0
-        while choice not in valid_choices:
-            try:
-                choice = int(input("Enter your choice: "))
-                if choice not in valid_choices:
-                    print("Invalid choice. Please enter a valid option.")
-            except ValueError:
-                print("Invalid input. Please enter a number.")
-        if choice != 1:
-            add_rom = False
-
-    for i, rom in enumerate(roms, start=1):
-        rom_section: str = f"ROM{i}"
-        config[rom_section] = rom
+def main():
+    click.echo("Welcome to android rom configuration initializer")
+    click.echo("Written by Akash Kakkar")
+    add_config()
 
 
 config = configparser.ConfigParser()
-print("Welcome to Configuration Initializer")
-print("By Akash Kakkar")
-print("What do you want to do?")
-print("1. Add a new ROM and device to configuration")
-valid_choices: List[int] = [1,]
-choice: int = 0
-
-while choice not in valid_choices:
-    try:
-        choice = int(input("Enter your choice: "))
-        if choice not in valid_choices:
-            print("Invalid choice. Please enter a valid option.")
-    except ValueError:
-        print("Invalid input. Please enter a number.")
-
-if choice == 1:
-    add_rom_config()
+CONFIG_DIR = "configs"
+CONFIG_FILE = f"{CONFIG_DIR}/rom.ini"
 
 
-def write_configuration():
+def write_configuration() -> bool:
     # Check if "configs" directory exists, and create it if it doesn't
-    if not os.path.exists("configs"):
-        os.makedirs("configs")
+    if not os.path.exists(CONFIG_DIR):
+        os.makedirs(CONFIG_DIR)
 
-    # Write or append the configuration file
-    with open("configs/telegram.ini", "a") as configfile:
+    # Write the entire configuration to the file
+    with open(CONFIG_FILE, "w") as configfile:
         config.write(configfile)
-    print("Configuration file created/appended successfully")
+    click.echo("Configuration written to the file successfully")
+    return True
+
+
+def is_section_duplicate(section_name: str) -> bool:
+    """Check if the section already exists in the configuration file."""
+    config.read(CONFIG_FILE)
+    return section_name in config.sections()
+
+
+@click.command()
+@click.option("--rom-name", prompt="Enter the name of the rom",
+              help="Name of the rom", default="crDroid")
+@click.option("--repo-sync-command", prompt="Enter the command to sync the repo",
+              help="Command to sync the repo", default="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --current-branch --optimized-fetch")
+@click.option("--lunch-name", prompt="Enter the lunch name",
+              help="Lunch name", default="lineage")
+@click.option("--rom-path", prompt="Enter the path of the rom",
+              help="Path of the rom", default="/mnt/wsl/rom/cr")
+@click.option("--device-codename", prompt="Enter the codename of the device",
+              help="Codename of the device", default="munch")
+@click.option("--build-variant", prompt="Enter the build variant",
+              help="Build variant", default="userdebug")
+@click.option("--build-command", prompt="Enter the build command",
+              help="Build command", default="m bacon")
+@click.option("--manifest-url", prompt="Enter the manifest url",
+              help="Manifest url", default="https://github.com/crdroidandroid/android.git")
+@click.option("--manifest-branch", prompt="Enter the manifest branch",
+              help="Manifest branch", default="13.0")
+@click.option("--local-manifest-url", prompt="Enter the local manifest url",
+              help="Local manifest url", default="https://github.com/akash07k/local_manifests.git")
+@click.option("--local-manifest-branch", prompt="Enter the local manifest branch",
+              help="Local manifest branch", default="lineage")
+@click.option("--upload-command", prompt="Enter the upload command",
+              help="Upload command", default="curl --ssl -k -T {uploadfile} ftp://uploadme.example.com/files/munch/9.x/ --user username:password")
+def add_config(rom_name: str, repo_sync_command: str, lunch_name: str, rom_path: str, device_codename: str, build_variant: str, build_command: str, manifest_url: str, manifest_branch: str, local_manifest_url: str, local_manifest_branch: str, upload_command: str) -> bool:
+    """Add a configuration to the configuration file."""
+    if is_section_duplicate(f"{rom_name}_Rom"):
+        click.echo(
+            f"Configuration section '{name}_Rom' already exists. Please choose a different name.")
+        return False
+
+    # Read the existing configurations
+    config.read(CONFIG_FILE)
+
+    # Add the new configuration
+    config[f"{rom_name}_Rom"] = {
+        "rom_name": rom_name,
+        "repo_sync_command": repo_sync_command,
+        "lunch_name": lunch_name,
+        "rom_path": rom_path,
+        "device_codename": device_codename,
+        "build_variant": build_variant,
+        "build_command": build_command,
+        "manifest_url": manifest_url,
+        "manifest_branch": manifest_branch,
+        "local_manifest_url": local_manifest_url,
+        "local_manifest_branch": local_manifest_branch,
+        "upload_command": upload_command
+    }
+
+    # Write the updated configuration to the file
+    write_configuration()
+    add_another = click.confirm(
+        "Do you want to add another config?", default=False)
+    if add_another:
+        add_config()
+    else:
+        click.echo("Bye bye!")
+    return True
+
+
+if __name__ == "__main__":
+    main()
