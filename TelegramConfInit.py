@@ -14,7 +14,7 @@ CONFIG_DIR = "configs"
 CONFIG_FILE = f"{CONFIG_DIR}/telegram.ini"
 
 
-def write_configuration():
+def write_configuration() -> bool:
     # Check if "configs" directory exists, and create it if it doesn't
     if not os.path.exists(CONFIG_DIR):
         os.makedirs(CONFIG_DIR)
@@ -23,6 +23,7 @@ def write_configuration():
     with open(CONFIG_FILE, "a") as configfile:
         config.write(configfile)
     click.echo("Configuration file created/appended successfully")
+    return True
 
 
 def is_section_duplicate(section_name: str) -> bool:
@@ -40,12 +41,12 @@ def is_section_duplicate(section_name: str) -> bool:
               help="Enter your Telegram chat ID", default="123456789")
 @click.option("--username", prompt="Enter your Telegram username",
               help="Enter your Telegram username", default="akashk07")
-def add_config(name: str, token: str, chatid: str, username: str):
+def add_config(name: str, token: str, chatid: str, username: str) -> bool:
     """Add a new configuration to the configuration file"""
     if is_section_duplicate(f"{name}_Telegram"):
         click.echo(
             f"Configuration section '{name}_Telegram' already exists. Please choose a different name.")
-        return
+        return False
 
     config[f"{name}_Telegram"] = {
         "name": name,
@@ -54,6 +55,7 @@ def add_config(name: str, token: str, chatid: str, username: str):
         "username": username
     }
     write_configuration()
+    return True
 
 
 if __name__ == "__main__":
