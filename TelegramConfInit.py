@@ -37,11 +37,11 @@ def is_section_duplicate(section_name: str) -> bool:
               help="Enter your Telegram config name", default="default")
 @click.option("--token", prompt="Enter your Telegram bot token",
               help="Enter your Telegram bot token", default="123456789:abcdefghijklmnopqrstuvwxyz")
-@click.option("--chatid", prompt="Enter your Telegram chat ID",
-              help="Enter your Telegram chat ID", default="123456789")
+@click.option("--chat_ids", prompt="Enter your Telegram chat IDs separated by a comma",
+              help="Enter your Telegram chat IDs separated by a comma", default="123456789")
 @click.option("--username", prompt="Enter your Telegram username",
               help="Enter your Telegram username", default="akashk07")
-def add_config(name: str, token: str, chatid: str, username: str) -> bool:
+def add_config(name: str, token: str, chat_ids: str, username: str) -> bool:
     """Add a new configuration to the configuration file"""
     if is_section_duplicate(f"{name}_Telegram"):
         click.echo(
@@ -55,7 +55,7 @@ def add_config(name: str, token: str, chatid: str, username: str) -> bool:
     config[f"{name}_Telegram"] = {
         "name": name,
         "token": token,
-        "chatid": chatid,
+        "chat_ids": chat_ids,
         "username": username
     }
 
