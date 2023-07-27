@@ -231,8 +231,9 @@ def initialize_repo() -> bool:
     bot.send_message(message)
     os.chdir(rom_path)
     try:
-        result = subprocess.run(["bash", "-c",
-                                 f"repo init -u {manifest_url} -b {manifest_branch} --git-lfs -g default,-mips,-darwin,-notdefault"], check=True, text=True)
+        repo_init_command = f"repo init -u {manifest_url} -b {manifest_branch} --git-lfs -g default,-mips,-darwin,-notdefault"
+        result = subprocess.run(
+            f"bash -c '{repo_init_command}'", check=True, text=True, shell=True)
         click.echo(result.stdout)
         message = f"Repo initialized successfully"
         click.echo(message)
@@ -248,8 +249,9 @@ def initialize_repo() -> bool:
 def clone_local_manifest() -> bool:
     os.chdir(rom_path)
     try:
-        result = subprocess.run(["bash", "-c",
-                                 f"git clone {local_manifest_url} -b {local_manifest_branch} {rom_path}/.repo/local_manifests"], check=True, text=True)
+        clone_local_manifest_command = f"git clone {local_manifest_url} -b {local_manifest_branch} {rom_path}/.repo/local_manifests"
+        result = subprocess.run(
+            f"bash -c '{clone_local_manifest_command}'", check=True, text=True, shell=True)
         click.echo(result.stdout)
         click.echo(f"Local manifest cloned successfully")
         return True
@@ -266,8 +268,8 @@ def sync_sources() -> bool:
     bot.send_message(message)
     os.chdir(rom_path)
     try:
-        result = subprocess.run(["bash", "-c",
-                                 repo_sync_command], check=True, text=True)
+        result = subprocess.run(
+            f"bash -c '{repo_sync_command}'", check=True, text=True, shell=True)
         click.echo(result.stdout)
         message = f"Synchronization completed successfully"
         click.echo(message)
@@ -349,7 +351,7 @@ def envsetup_lunch_build() -> bool:
                 click.echo(message)
                 bot.send_message(message)
                 result = subprocess.run(
-                    ["bash", "-c", consolidated_command], check=True, text=True)
+                    f"bash -c '{consolidated_command}'", check=True, text=True, shell=True)
                 message = "Build completed successfully"
                 click.echo(message)
                 bot.send_message(message)
@@ -396,8 +398,8 @@ def upload_build():
             upload_command = upload_command.replace(
                 "{uploadfile}", f"{latest_build}")
         try:
-            result = subprocess.run(["bash", "-c",
-                                     upload_command], check=True, text=True)
+            result = subprocess.run(
+                f"bash -c '{upload_command}'", check=True, text=True, shell=True)
             click.echo(result.stdout)
             message = "Build uploaded successfully"
             click.echo(message)
