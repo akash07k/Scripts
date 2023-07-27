@@ -192,7 +192,7 @@ def load_config():
 
 def initialize() -> bool:
     bot.send_message(
-        f"@{telegram_user_name} is preparing to build: {selected_rom} for {device_codename}")
+        f"👷‍♂️🏗️ @{telegram_user_name} is preparing to build: {selected_rom} for {device_codename}")
     if os.path.exists(rom_path):
         click.echo("ROM directory exists")
         os.chdir(rom_path)
@@ -214,7 +214,7 @@ def initialize() -> bool:
 def initialize_local_manifests() -> bool:
     message = "Initializing the local manifests"
     click.echo(message)
-    bot.send_message(message)
+    bot.send_message(f"{message} 〰️")
     if os.path.exists(rom_path + "/.repo/local_manifests"):
         click.echo("Local manifest directory exists")
         return True
@@ -223,7 +223,7 @@ def initialize_local_manifests() -> bool:
         if clone_local_manifest():
             message = "Local manifests cloned successfully"
             click.echo(message)
-            bot.send_message(message)
+            bot.send_message(f"{message} 〰️🏛️")
             return True
         else:
             return False
@@ -232,7 +232,7 @@ def initialize_local_manifests() -> bool:
 def initialize_repo() -> bool:
     message = "Initializing the repo"
     click.echo(message)
-    bot.send_message(message)
+    bot.send_message(f"{message} 🚔🏎️")
     os.chdir(rom_path)
     try:
         repo_init_command = f"repo init -u {manifest_url} -b {manifest_branch} --git-lfs -g default,-mips,-darwin,-notdefault"
@@ -241,12 +241,12 @@ def initialize_repo() -> bool:
         click.echo(result.stdout)
         message = f"Repo initialized successfully"
         click.echo(message)
-        bot.send_message(message)
+        bot.send_message(f"{message} 😂🥂🥂")
         return True
     except Exception as e:
         click.echo(
             f"Error in initializing the repo. Please initialize it manually: {e}")
-        bot.send_message("Error in initializing the repo")
+        bot.send_message("Error in initializing the repo 💥💥🤯")
         return False
 
 
@@ -262,14 +262,14 @@ def clone_local_manifest() -> bool:
     except Exception as e:
         click.echo(
             f"Error in cloning the local manifest. Please clone it manually: {e}")
-        bot.send_message("Error in cloning the local manifest")
+        bot.send_message("Error in cloning the local manifest 💥💥🤯🤯")
         return False
 
 
 def sync_sources() -> bool:
     message = "Synchronizing the sources"
     click.echo(message)
-    bot.send_message(message)
+    bot.send_message(f"{message} 🙋🚄🚅🚅")
     os.chdir(rom_path)
     try:
         result = subprocess.run(
@@ -277,7 +277,7 @@ def sync_sources() -> bool:
         click.echo(result.stdout)
         message = f"Synchronization completed successfully"
         click.echo(message)
-        bot.send_message(message)
+        bot.send_message(f"{message} 🥂🥂🍸")
         return True
     except Exception as e:
         click.echo(
@@ -340,32 +340,32 @@ def envsetup_lunch_build() -> bool:
             if choice == 1:
                 consolidated_command: str = f"{envsetup_command} && {lunch_command} && {build_command}"
                 message = "Proceeding with a dirty build"
-                bot.send_message(message)
+                bot.send_message(f"{message} 🚄🪁💸")
             elif choice == 2:
                 clean_command: str = "m clean -j$(nproc --all)"
                 consolidated_command: str = f"{envsetup_command} && {clean_command} && {lunch_command} && {build_command}"
                 message = "Proceeding with a clean build"
-                bot.send_message(message)
+                bot.send_message(f"{message} 🪁💸🚄🚅🚅")
             try:
                 if sync_then_build:
                     result = sync_sources()
                     if not result:
                         return False
-                message = "Building the rom"
+                message = "Building the rom "
                 click.echo(message)
-                bot.send_message(message)
+                bot.send_message(f"{message} 🪁🛩️✈️🛫")
                 result = subprocess.run(
                     f"bash -c '{consolidated_command}'", check=True, text=True, shell=True)
                 message = "Build completed successfully"
                 click.echo(message)
-                bot.send_message(message)
+                bot.send_message(f"{message} 🏗️🏢🏦🏨✈️🛬🛬🛬")
                 click.echo(result.stdout)
                 upload_build()
                 return True
             except Exception as e:
                 click.echo(
                     f"Error in building the rom, please build it manually: {e}")
-                bot.send_message(f"Error in building the rom {e}")
+                bot.send_message(f"Error in building the rom {e} 🤯💥💥💣🤯")
                 click.echo("Output:")
                 click.echo(e)
                 return False
@@ -397,7 +397,7 @@ def upload_build():
         extension=".zip", directory=f"out/target/product/{device_codename}")
     if latest_build != "None":
         click.echo("Uploading the build")
-        bot.send_message("Uploading the build")
+        bot.send_message("Uploading the build 🏦")
         if "{uploadfile}" in upload_command:
             upload_command = upload_command.replace(
                 "{uploadfile}", f"{latest_build}")
@@ -411,7 +411,7 @@ def upload_build():
                     "{filename}", f"{latest_build}")
             message = f"Build uploaded successfully! Download it from [Here]({download_url})"
             click.echo(message)
-            bot.send_message(message)
+            bot.send_message(f"{message} 🍷🍷🥂🥂🍾🍾")
         except Exception as e:
             click.echo(
                 f"Error in uploading the build, please upload it manually: {e}")
