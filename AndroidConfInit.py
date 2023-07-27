@@ -57,7 +57,9 @@ def is_section_duplicate(section_name: str) -> bool:
               help="Local manifest branch", default="lineage")
 @click.option("--upload-command", prompt="Enter the upload command",
               help="Upload command", default="curl --ssl -k -T {uploadfile} ftp://uploadme.example.com/files/munch/9.x/ --user username:password")
-def add_config(rom_name: str, repo_sync_command: str, lunch_name: str, rom_path: str, device_codename: str, build_variant: str, build_command: str, manifest_url: str, manifest_branch: str, local_manifest_url: str, local_manifest_branch: str, upload_command: str) -> bool:
+@click.option("--download-url", prompt="Enter the download URL",
+              help="Download URL", default="https://sourceforge.net/projects/crdroid/files/munch/9.x/{filename}/download")
+def add_config(rom_name: str, repo_sync_command: str, lunch_name: str, rom_path: str, device_codename: str, build_variant: str, build_command: str, manifest_url: str, manifest_branch: str, local_manifest_url: str, local_manifest_branch: str, upload_command: str, download_url: str) -> bool:
     """Add a configuration to the configuration file."""
     if is_section_duplicate(f"{rom_name}_Rom"):
         click.echo(
@@ -80,7 +82,8 @@ def add_config(rom_name: str, repo_sync_command: str, lunch_name: str, rom_path:
         "manifest_branch": manifest_branch,
         "local_manifest_url": local_manifest_url,
         "local_manifest_branch": local_manifest_branch,
-        "upload_command": upload_command
+        "upload_command": upload_command,
+        "download_url": download_url,
     }
 
     # Write the updated configuration to the file
