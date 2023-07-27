@@ -36,6 +36,7 @@ local_manifest_branch: str = ""
 build_variant: str = ""
 build_command: str = ""
 upload_command: str = ""
+download_url: str = ""
 sync_choices: List[str] = []
 build_choices: List[str] = []
 
@@ -184,6 +185,8 @@ def load_config():
     build_command = rom_config.get(selected_rom, "build_command")
     global upload_command
     upload_command = rom_config.get(selected_rom, "upload_command")
+    global download_url
+    download_url = rom_config.get(selected_rom, "download_url")
 
 
 def initialize() -> bool:
