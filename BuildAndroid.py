@@ -404,7 +404,11 @@ def upload_build():
             result = subprocess.run(
                 f"bash -c '{upload_command}'", check=True, text=True, shell=True)
             click.echo(result.stdout)
-            message = "Build uploaded successfully"
+            global download_url
+            if "{filename}" in download_url:
+                download_url = download_url.replace(
+                    "{filename}", f"{latest_build}")
+            message = f"Build uploaded successfully! Download it from [Here]({download_url})"
             click.echo(message)
             bot.send_message(message)
         except Exception as e:
