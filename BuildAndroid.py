@@ -158,6 +158,7 @@ def load_config():
     global telegram_chat_ids
     telegram_chat_ids = [telegram_config.get(
         selected_telegram, "chat_ids")]
+    global telegram_user_name
     telegram_user_name = telegram_config.get(
         selected_telegram, "username")  # type: ignore
     global bot
@@ -191,7 +192,7 @@ def load_config():
 
 def initialize() -> bool:
     bot.send_message(
-        f"Preparing to build: {selected_rom} for {device_codename}")
+        f"@{telegram_user_name} is preparing to build: {selected_rom} for {device_codename}")
     if os.path.exists(rom_path):
         click.echo("ROM directory exists")
         os.chdir(rom_path)
