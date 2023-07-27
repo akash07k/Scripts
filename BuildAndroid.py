@@ -239,9 +239,9 @@ def initialize_repo() -> bool:
         click.echo(message)
         bot.send_message(message)
         return True
-    except subprocess.CalledProcessError as e:
+    except Exception as e:
         click.echo(
-            f"Error in initializing the repo. Please initialize it manually: {e.stdout}")
+            f"Error in initializing the repo. Please initialize it manually: {e}")
         bot.send_message("Error in initializing the repo")
         return False
 
@@ -255,9 +255,9 @@ def clone_local_manifest() -> bool:
         click.echo(result.stdout)
         click.echo(f"Local manifest cloned successfully")
         return True
-    except subprocess.CalledProcessError as e:
+    except Exception as e:
         click.echo(
-            f"Error in cloning the local manifest. Please clone it manually: {e.output}")
+            f"Error in cloning the local manifest. Please clone it manually: {e}")
         bot.send_message("Error in cloning the local manifest")
         return False
 
@@ -275,9 +275,9 @@ def sync_sources() -> bool:
         click.echo(message)
         bot.send_message(message)
         return True
-    except subprocess.CalledProcessError as error:
+    except Exception as e:
         click.echo(
-            f"Error in syncing the sources. Please sync the sources manually: {error.output}")
+            f"Error in syncing the sources. Please sync the sources manually: {e}")
         return False
 
 
@@ -358,12 +358,12 @@ def envsetup_lunch_build() -> bool:
                 click.echo(result.stdout)
                 upload_build()
                 return True
-            except subprocess.CalledProcessError as e:
+            except Exception as e:
                 click.echo(
-                    "Error in building the rom, please build it manually:", e.stderr)
-                bot.send_message(f"Error in building the rom {e.stderr}")
+                    f"Error in building the rom, please build it manually: {e}")
+                bot.send_message(f"Error in building the rom {e}")
                 click.echo("Output:")
-                click.echo(e.output)
+                click.echo(e)
                 return False
         except click.Abort:
             click.echo("Operation aborted. Exiting.")
@@ -404,12 +404,12 @@ def upload_build():
             message = "Build uploaded successfully"
             click.echo(message)
             bot.send_message(message)
-        except subprocess.CalledProcessError as e:
+        except Exception as e:
             click.echo(
-                "Error in uploading the build, please upload it manually:", e.stderr)
-            bot.send_message(f"Error in uploading the build {e.stderr}")
+                f"Error in uploading the build, please upload it manually: {e}")
+            bot.send_message(f"Error in uploading the build {e}")
             click.echo("Output:")
-            click.echo(e.output)
+            click.echo(e)
 
 
 if __name__ == "__main__":
