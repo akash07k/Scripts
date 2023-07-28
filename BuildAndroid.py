@@ -393,14 +393,15 @@ def get_latest_file(extension: str = ".zip", directory: str = f"out/target/produ
 def upload_build():
     os.chdir(rom_path)
     global upload_command
-    latest_build = get_latest_file(
+    latest_build_path = get_latest_file(
         extension=".zip", directory=f"out/target/product/{device_codename}")
-    if latest_build != "None":
+    if latest_build_path != "None":
         click.echo("Uploading the build")
         bot.send_message("Uploading the build 🏦")
+        build_filename: str = os.path.basename(latest_build_path)
         if "{uploadfile}" in upload_command:
             upload_command = upload_command.replace(
-                "{uploadfile}", f"{latest_build}")
+                "{uploadfile}", f"{latest_build_path}")
         try:
             result = subprocess.run(
                 f"bash -c '{upload_command}'", check=True, text=True, shell=True)
@@ -408,7 +409,7 @@ def upload_build():
             global download_url
             if "{filename}" in download_url:
                 download_url = download_url.replace(
-                    "{filename}", f"{latest_build}")
+                    "{filename}", f"{build_filename}")
             message = f"Build uploaded successfully! Download it from [Here]({download_url})"
             click.echo(message)
             bot.send_message(f"{message} 🍷🍷🥂🥂🍾🍾")
