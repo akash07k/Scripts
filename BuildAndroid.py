@@ -415,7 +415,7 @@ def upload_build():
         except Exception as e:
             click.echo(
                 f"Error in uploading the build, please upload it manually: {e}")
-            bot.send_message(f"Error in uploading the build {e}")
+            bot.send_message(f"Error in uploading the build")
             click.echo("Output:")
             click.echo(e)
 
