@@ -63,14 +63,14 @@ def add_config(rom_name: str, repo_sync_command: str, lunch_name: str, rom_path:
     """Add a configuration to the configuration file."""
     if is_section_duplicate(f"{rom_name}_Rom"):
         click.echo(
-            f"Configuration section '{rom_name}_Rom' already exists. Please choose a different name.")
+            f"Configuration section '{rom_name}' already exists. Please choose a different name.")
         return False
 
     # Read the existing configurations
     config.read(CONFIG_FILE)
 
     # Add the new configuration
-    config[f"{rom_name}_Rom"] = {
+    config[f"{rom_name}"] = {
         "rom_name": rom_name,
         "repo_sync_command": repo_sync_command,
         "lunch_name": lunch_name,

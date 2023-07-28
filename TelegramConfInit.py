@@ -45,14 +45,14 @@ def add_config(name: str, token: str, chat_ids: str, username: str) -> bool:
     """Add a new configuration to the configuration file"""
     if is_section_duplicate(f"{name}_Telegram"):
         click.echo(
-            f"Configuration section '{name}_Telegram' already exists. Please choose a different name.")
+            f"Configuration section '{name}' already exists. Please choose a different name.")
         return False
 
     # Read the existing configurations
     config.read(CONFIG_FILE)
 
     # Add the new configuration
-    config[f"{name}_Telegram"] = {
+    config[f"{name}"] = {
         "name": name,
         "token": token,
         "chat_ids": chat_ids,
